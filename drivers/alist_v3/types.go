@@ -15,6 +15,7 @@ type ListReq struct {
 
 type ObjResp struct {
 	Name     string    `json:"name"`
+	UserId   int       `json:"user_id"`
 	Size     int64     `json:"size"`
 	IsDir    bool      `json:"is_dir"`
 	Modified time.Time `json:"modified"`

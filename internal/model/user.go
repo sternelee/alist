@@ -17,6 +17,7 @@ const (
 	GENERAL = iota
 	GUEST   // only one exists
 	ADMIN
+  NORMAL
 )
 
 const StaticHashSalt = "https://github.com/alist-org/alist"
@@ -46,6 +47,9 @@ type User struct {
 	OtpSecret  string `json:"-"`
 	SsoID      string `json:"sso_id"` // unique by sso platform
 	Authn      string `gorm:"type:text" json:"-"`
+  Email      string `json:"email" gorm:"unique" binding:"required"` // 用于重置密码
+	VerificationCode string     `json:"verification_code" gorm:"-:all"` // 用于邮箱验证码                                    // this field is only for Email verification, don't save it to database!
+	WeChatId   string `json:"wechat_id" gorm:"column:wechat_id;index"` // 用于微信通知
 }
 
 func (u *User) IsGuest() bool {

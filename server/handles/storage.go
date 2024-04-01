@@ -21,7 +21,8 @@ func ListStorages(c *gin.Context) {
 	}
 	req.Validate()
 	log.Debugf("%+v", req)
-	storages, total, err := db.GetStorages(req.Page, req.PerPage)
+  var user = c.MustGet("user").(*model.User)
+	storages, total, err := db.GetStorages(int(user.ID), req.Page, req.PerPage)
 	if err != nil {
 		common.ErrorResp(c, err, 500)
 		return
@@ -34,6 +35,8 @@ func ListStorages(c *gin.Context) {
 
 func CreateStorage(c *gin.Context) {
 	var req model.Storage
+  var user = c.MustGet("user").(*model.User)
+  req.UserId = int(user.ID)
 	if err := c.ShouldBind(&req); err != nil {
 		common.ErrorResp(c, err, 400)
 		return
