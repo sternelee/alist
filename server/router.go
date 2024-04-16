@@ -138,6 +138,14 @@ func admin(g *gin.RouterGroup) {
 	index.POST("/stop", middlewares.SearchIndex, handles.StopIndex)
 	index.POST("/clear", middlewares.SearchIndex, handles.ClearIndex)
 	index.GET("/progress", middlewares.SearchIndex, handles.GetProgress)
+
+  rss := g.Group("/rss")
+  rss.GET("/list", handles.GetFeeds)
+  rss.POST("/create", handles.CreateFeed)
+  rss.POST("/update", handles.UpdateFeed)
+  rss.DELETE("/delete", handles.DeleteFeed)
+  rss.GET("/all", handles.GetFeedArticles)
+  rss.GET("/search", handles.SearchFeed)
 }
 
 func _fs(g *gin.RouterGroup) {
