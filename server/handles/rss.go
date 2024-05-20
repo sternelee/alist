@@ -12,6 +12,8 @@ import (
 	"github.com/alist-org/alist/v3/server/common"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	// "github.com/anacrolix/torrent/bencode"
+	// "github.com/anacrolix/torrent/metainfo"
 )
 
 func GetFeeds(c *gin.Context) {
@@ -43,7 +45,7 @@ func CreateFeed(c *gin.Context) {
 		common.ErrorResp(c, err, 500)
 		return
 	}
-  // TODO: 同时搜索并添加 FeedArticle 列表
+	// TODO: 同时搜索并添加 FeedArticle 列表
 	common.SuccessResp(c)
 }
 
@@ -151,18 +153,17 @@ func SearchFeed(c *gin.Context) {
 		panic(err)
 	}
 
-	// https://acg.rip/.xml?term=%E5%85%B3%E4%BA%8E%E6%88%91%E8%BD%AC%E7%94%9F%E5%8F%98%E6%88%90%E5%8F%B2%E8%8E%B1%E5%A7%86%E8%BF%99%E6%A1%A3%E4%BA%8B+%E7%AC%AC%E4%B8%89%E5%AD%A3
-
-  var articles []model.FeedArticle
+	var articles []model.FeedArticle
 	for _, item := range rss.Channel.Items {
-    article := model.FeedArticle {
-      Description: item.Description,
-      Date: getTime(item.PubDate),
-      Link: item.Link,
-      Title: item.Title,
-      // TorrentURL: item.Link + ".torrent",
-    }
-    articles = append(articles, article)
+		log.Debugf("%+v", item)
+		article := model.FeedArticle{
+			Description: item.Description,
+			Date:        getTime(item.PubDate),
+			Link:        item.Link,
+			Title:       item.Title,
+			TorrentURL:  item.Link + ".torrent",
+		}
+		articles = append(articles, article)
 	}
 
 	common.SuccessResp(c, common.PageResp{
@@ -170,7 +171,44 @@ func SearchFeed(c *gin.Context) {
 	})
 }
 
-func getTime(str string) (time.Time) {
+func getTime(str string) time.Time {
 	stamp, _ := time.Parse("2006-01-02 15:04:05", str)
-  return stamp
+	return stamp
 }
+
+// func torrentHash(url string) string {
+// 	// 下载种子文件
+// 	resp, err := http.Get(url)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	defer resp.Body.Close()
+//
+// 	// 读取种子文件内容
+// 	data, err := io.ReadAll(resp.Body)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+//
+// 	// 解析种子文件
+// 	metaInfo, err := metainfo.Load(data)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+//
+// 	// 获取 info 字典
+// 	info := metaInfo.Info
+//
+// 	// 创建磁力链接
+// 	magnetLink, err := bencode.EncodeString(map[string]interface{}{
+// 		"xt": "urn:btih:" + info.HashInfoBytes().HexString(),
+// 		"dn": info.Name,
+// 		"tr": metaInfo.AnnounceList,
+// 	})
+// 	if err != nil {
+// 		panic(err)
+// 	}
+//
+// 	// 打印磁力链接
+// 	fmt.Println("磁力链接:", magnetLink)
+// }
