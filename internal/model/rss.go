@@ -25,12 +25,12 @@ type Feed struct {
   Enabled bool
   Priority int
   UseRegex bool
-  MustContain []string
-  MustNotContain []string
+  MustContain string
+  MustNotContain string
   EpisodeFilter string
   AffectedFeeds string
   LastMatch time.Time
   IgnoreDays int
   SmartFilter bool
-  PreviouslyMatchedEpisodes []string
+  PreviouslyMatchedEpisodes string
 }

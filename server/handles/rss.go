@@ -176,6 +176,9 @@ func getTime(str string) time.Time {
 	return stamp
 }
 
+// download torrent file and get magnet link
+
+
 // func torrentHash(url string) string {
 // 	// 下载种子文件
 // 	resp, err := http.Get(url)
